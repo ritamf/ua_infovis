@@ -1,0 +1,88 @@
+<html>
+
+<head>
+    <script src="https://threejs.org/build/three.js"></script>
+</head>
+
+<body>
+    <script>
+        // Definition of the scene, camera and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        window.addEventListener('resize', onWindowResize);
+        function onWindowResize() { // adjusts camera and renderer according to window size
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        document.body.appendChild(renderer.domElement);
+
+
+        // Definition of objects
+        const geometryCube = new THREE.BoxGeometry(1, 1, 1);
+        const materialCube = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+        const cube = new THREE.Mesh(geometryCube, materialCube);
+        scene.add(cube);
+
+
+        const geometryCone = new THREE.ConeGeometry(1, 2, 16);
+        const materialCone = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true });
+        const cone = new THREE.Mesh(geometryCone, materialCone);
+        scene.add(cone);
+        cone.position.x += 2;
+
+
+        const geometryTorus = new THREE.TorusGeometry(0.75, 0.3, 3, 5);
+        const materialTorus = new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true });
+        const torus = new THREE.Mesh(geometryTorus, materialTorus);
+        scene.add(torus);
+        torus.position.x -= 2;
+
+
+        const geometrySphere = new THREE.SphereGeometry(1, 13, 13);
+        const materialSphere = new THREE.MeshBasicMaterial({ color: 'orange', wireframe: true });
+        const sphere = new THREE.Mesh(geometrySphere, materialSphere);
+        scene.add(sphere);
+        sphere.position.y += 2;
+
+
+        const geometryCylinder = new THREE.CylinderGeometry(0.5, 0.5, 2, 32);
+        const materialCylinder = new THREE.MeshBasicMaterial({ color: 'blue', wireframe:true });
+        const cylinder = new THREE.Mesh(geometryCylinder, materialCylinder);
+        scene.add(cylinder);
+        cylinder.position.y -= 2;
+
+
+
+        camera.position.z = 5; // adjust camera position
+
+        // Scene rendering
+        function render() {
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+
+            // Scene animation
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+
+            cone.rotation.x += 0.01;
+            cone.rotation.z += 0.01;
+
+            torus.rotation.y += 0.01;
+            torus.rotation.z += 0.01;
+
+            sphere.rotation.y += 0.01;
+
+            cylinder.rotation.z -= 0.01;
+        }
+        render();
+
+    </script>
+</body>
+
+</html>

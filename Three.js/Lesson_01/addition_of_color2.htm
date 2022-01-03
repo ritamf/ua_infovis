@@ -1,0 +1,84 @@
+<html>
+
+<head>
+    <script src="https://threejs.org/build/three.js"></script>
+</head>
+
+<body>
+    <script>
+        // Definition of the scene, camera and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0xccaacc);
+        document.body.appendChild(renderer.domElement);
+
+        // Definition of an object/geometry and camera position
+        var geometryPink = new THREE.BufferGeometry();
+        const verticesPink = new Float32Array([
+            0.0, 0.0, 0.0,
+            0.5, 0.75, 0.0,
+            1.0, 0.0, 0.0
+        ]);
+        geometryPink.setAttribute('position', new THREE.BufferAttribute(verticesPink, 3));
+        const geometryMaterialPink = new THREE.MeshBasicMaterial({ color: 0xff007f, side: THREE.DoubleSide });
+        const trianglePink = new THREE.Mesh(geometryPink, geometryMaterialPink);
+        scene.add(trianglePink);
+
+
+        var geometryYellow = new THREE.BufferGeometry();
+        const verticesYellow = new Float32Array([
+            0.0, 0.0, 0.0,
+            -0.35, -1.0, 0.0,
+            -0.7, 0.25, 0.0
+        ]);
+        geometryYellow.setAttribute('position', new THREE.BufferAttribute(verticesYellow, 3));
+        const geometryMaterialYellow = new THREE.MeshBasicMaterial({ color: 'yellow', side: THREE.DoubleSide });
+        const triangleYellow = new THREE.Mesh(geometryYellow, geometryMaterialYellow);
+        scene.add(triangleYellow);
+
+
+        var geometryRainbow = new THREE.BufferGeometry();
+        const verticesRainbow = new Float32Array([
+            -0.2, 0.15, 0.0,
+            0.35, 0.65, 0.0,
+            -0.85, 0.9, 0.0
+        ]);
+        var colors = new Uint8Array([
+            255, 0, 0,
+            0, 255, 0,
+            0, 0, 255,
+        ]);
+        geometryRainbow.setAttribute('color', new THREE.BufferAttribute(colors, 3, true));
+        geometryRainbow.setAttribute('position', new THREE.BufferAttribute(verticesRainbow, 3));
+        const geometryMaterialRainbow = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors, side: THREE.DoubleSide });
+        const triangleRainbow = new THREE.Mesh(geometryRainbow, geometryMaterialRainbow);
+        scene.add(triangleRainbow);
+
+
+        var geometryTransparent = new THREE.BufferGeometry();
+        const verticesTransparent = new Float32Array([
+            0.15,-0.95, 0.0,
+            0.90,-0.7,  0.0,
+            0.65, 0.10, 0.0
+        ]);
+        geometryTransparent.setAttribute('position', new THREE.BufferAttribute(verticesTransparent, 3));
+        const geometryMaterialTransparent = new THREE.MeshBasicMaterial({ color: 'white', wireframe: true, side: THREE.DoubleSide });
+        const triangleTransparent = new THREE.Mesh(geometryTransparent, geometryMaterialTransparent);
+        scene.add(triangleTransparent);
+
+        camera.position.z = 5;
+
+        // Scene rendering
+        function render() {
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+        }
+        render();
+
+    </script>
+</body>
+
+</html>
