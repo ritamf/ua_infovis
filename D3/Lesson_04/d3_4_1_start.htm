@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Cartography - Lesson 4</title>
     <script src="https://d3js.org/d3.v6.js"></script>
     <style>
     </style>
-    
-    <script type="text/javascript">  
+
+    <script type="text/javascript">
         function draw(geo_data) {
             let margin = 75,
                 width = 1400 - margin,
@@ -17,17 +18,33 @@
                 .attr("width", width + margin)
                 .attr("height", height + margin)
                 .append('g')
-                    .attr('class', 'map');
+                .attr('class', 'map');
 
+            // tranforms a latitude,longitude pair of points in the pixel coordinates display to the SVG element
+            let projection = d3.geoMercator(); // geoOrthographic
+
+            // draw the polygons using the path element
+            let path = d3.geoPath().projection(projection);
+            svg.append("path")
+                .attr("d", path(geo_data)) // The path function returns a path of each country
+                .attr("transform", "translate(" + 0 + ", " + 61 + ")")
+                //.attr("cx", 200)
+                //.attr("cy", 120)
+                .attr("fill", function () { return "rgb(190,100,70)"; })
+                .attr("stroke", "black")
+                .attr("stroke-width", 1);
         };
     </script>
 </head>
+
 <body>
     <script type="text/javascript">
         d3.json("world_countries.json")
             .then(draw)
             .catch(err => { console.log(err) });
+
+        // TODO: pre processing section
     </script>
 </body>
-</html>
 
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>plot deti dados candidatos</title>
+    <script src="http://d3js.org/d3.v6.js"></script>
+    <script>
+        let width = 500;
+        let height = 300;
+        let margin = 30;
+
+        function draw(data) {
+
+            let svg = d3.select('body').append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            ///////////
+            // MIECT //
+            ///////////
+
+            // The scale does not have extent, as it need all the values
+            let x_extent = data.map(d => d.Ano);
+            let x_scale = d3.scalePoint()
+                .range([margin, width - margin])
+                .domain(x_extent);
+
+            // returns a two-size array with min and max values of y from data
+            let MIECT_extent = d3.extent(data, d => d.MIECT);
+            let MIECT_scale = d3.scaleLinear()
+                .range([height - margin, margin])
+                .domain([0, MIECT_extent[1]]); // adding 0 to let all points have the same base
+
+            let MIECTcircles = svg.selectAll("circle")
+                .data(data)
+                .join("circle")
+                .attr("cx", (d, i) => x_scale(d.Ano))
+                .attr("cy", d => MIECT_scale(d.MIECT))
+                .attr("r", 10);
+
+            let x_axis = d3.axisBottom(x_scale);
+            d3.select("svg")
+                .append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + (height - margin) + ")")
+                .call(x_axis);
+
+            let MIECT_axis = d3.axisLeft(MIECT_scale);
+            d3.select("svg")
+                .append("g")
+                .attr("class", "y axis")
+                .attr("transform", "translate(" + (margin) + ", 0" + ")")
+                .call(MIECT_axis);
+
+
+            let MIECTline = d3.line()
+                .x((d, i) => x_scale(d.Ano))
+                .y(d => MIECT_scale(d.MIECT));
+
+            d3.select("svg")
+                .append("path")
+                .attr("d", MIECTline(data))
+                .attr("class", "MIECT");
+
+
+            ///////////
+            // MIEET //
+            ///////////
+
+            // returns a two-size array with min and max values of y from data
+            let MIEET_extent = d3.extent(data, d => d.MIEET);
+            let MIEET_scale = d3.scaleLinear()
+                .range([height - margin, margin])
+                .domain([0, MIECT_extent[1]]); // adding 0 to let all points have the same base
+
+            let MIEETcircles = svg.selectAll("MIEETcircle")
+                .data(data)
+                .join("circle")
+                .attr("cx", (d, i) => x_scale(d.Ano))
+                .attr("cy", d => MIEET_scale(d.MIEET))
+                .attr("r", 10);
+
+            let MIEETline = d3.line()
+                .x((d, i) => x_scale(d.Ano))
+                .y(d => MIEET_scale(d.MIEET));
+
+            d3.select("svg")
+                .append("path")
+                .attr("d", MIEETline(data))
+                .attr("class", "MIEET");
+
+            ///////////
+            // LTSI  //
+            ///////////
+
+            // returns a two-size array with min and max values of y from data
+            let LTSI_extent = d3.extent(data, d => d.LTSI);
+            let LTSI_scale = d3.scaleLinear()
+                .range([height - margin, margin])
+                .domain([0, LTSI_extent[1]]); // adding 0 to let all points have the same base
+
+            let LTSIcircles = svg.selectAll("LTSIcircle")
+                .data(data)
+                .join("circle")
+                .attr("cx", (d, i) => x_scale(d.Ano))
+                .attr("cy", d => LTSI_scale(d.LTSI))
+                .attr("r", 10);
+
+            let LTSIline = d3.line()
+                .x((d, i) => x_scale(d.Ano))
+                .y(d => LTSI_scale(d.LTSI));
+
+            d3.select("svg")
+                .append("path")
+                .attr("d", LTSIline(data))
+                .attr("class", "LTSI");
+        }
+    </script>
+
+    <style>
+        .axis path {
+            fill: none;
+            stroke: black;
+        }
+
+        .axis {
+            font-size: 8pt;
+            font-family: sans-serif;
+        }
+
+        .tick {
+            fill: none;
+            stroke: black;
+        }
+
+        circle.MIECTcircle {
+            stroke: black;
+            stroke-width: 0.5px;
+            fill: red;
+            opacity: 0.6;
+        }
+
+        .MIEETcircle {
+            stroke: black;
+            stroke-width: 0.5px;
+            fill: green;
+            opacity: 0.6;
+        }
+
+
+        .LTSIcircle {
+            stroke: black;
+            stroke-width: 0.5px;
+            fill: blue;
+            opacity: 0.6;
+        }
+
+        path {
+            fill: none;
+            stroke: black;
+            stroke-width: 2px;
+        }
+
+        path.MIECT {
+            stroke: red;
+        }
+
+        path.MIEET {
+            stroke: green;
+        }
+
+        path.LTSI {
+            stroke: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>Note: Run this with a server</h3>
+    <script>
+        d3.json("DETI_Dados_Candidatos.json")
+            .then(draw)
+            .catch(function (err) { console.log(err) });
+    </script>
+</body>
+
+</html>
