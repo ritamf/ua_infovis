@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Another D3 Example</title>
+    <script type="text/javascript" src="http://d3js.org/d3.v6.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+
+        /*
+        d3.select("body")
+            .append("p")
+            .text("New paragraph!");
+
+        d3.select("body")
+            .append("p")
+            .text("Another new paragraph!")
+            .style('color', '#990099');
+
+        d3.select("body")
+            .append("h1")
+            .text("Using data");
+        */
+
+        let dataset = [5, 10, 15, 20, 25, 30, 35];
+
+        d3.select("body").selectAll("p")
+            .data(dataset)
+            .join("p")
+            .text(function (d) {
+                return "I can count up to " + d;
+            })
+            .style('color', function (d) {
+                return (d<=15)?"#000":"#F00";
+            })
+            .style("font-size",function (d) {
+                return d + "px";
+            })
+            .style("margin-left",function (d) {
+                return (d*5) + "px"
+            });
+    </script>
+</body>
+
+</html>
