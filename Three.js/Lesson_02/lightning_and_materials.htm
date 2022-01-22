@@ -24,6 +24,10 @@
         const cube = new THREE.Mesh(geometry, material);
         scene.add(cube);
 
+        // Add directional light, with color 0xffffff and intensity 1.0
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+        scene.add(directionalLight);
+
         const alight = new THREE.AmbientLight(0xffffff);
         scene.add(alight);
 
