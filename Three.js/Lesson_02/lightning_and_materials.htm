@@ -12,6 +12,16 @@
 
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Update viewport
+        window.addEventListener('resize', onWindowResize);
+        function onWindowResize() {
+            camera.aspect =  window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
         document.body.appendChild(renderer.domElement);
 
         // Definition of an object/geometry and camera position
