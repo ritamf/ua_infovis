@@ -12,25 +12,35 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Definition of an object/geometry and camera position
+        // Definition of geometry
         const geometry = new THREE.SphereGeometry(1, 10, 10); // second argument: widthSegments, third argument: heightSegments
-        const material = new THREE.MeshPhongMaterial({ // this material can only be seen with light
-            color: '#006063',
-            specular: '#a9fcff',
-            shininess: 100,
-            flatShading: true
+        
+        // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        const emerald = new THREE.MeshPhongMaterial({
+            color: new THREE.Color(0.07568, 0.61424, 0.07568),
+            specular: new THREE.Color(0.633, 0.7278, 0.633),
+            shininess: 0.6 * 256,
         });
-        const cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
+
+        const gold = new THREE.MeshPhongMaterial({
+            color: '#DAA520',
+            ambient: new THREE.Color(0.24725, 0.1995, 0.0745),
+            diffuse: new THREE.Color(0.75164, 0.60648, 0.22648),
+            specular: new THREE.Color(0.628281, 0.555802, 0.366065),
+            shininess: 0.4 * 256,
+        });
+
+        const sphere = new THREE.Mesh(geometry, gold);
+        scene.add(sphere);
         camera.position.z = 5;
 
-        const cube2 = new THREE.Mesh(geometry, material);
-        scene.add(cube2);
-        cube2.position.x -= 2.5;
+        const sphereLeft = new THREE.Mesh(geometry, gold);
+        scene.add(sphereLeft);
+        sphereLeft.position.x = -2.5;
 
-        const cube3 = new THREE.Mesh(geometry, material);
-        scene.add(cube3);
-        cube3.position.x += 2.5;
+        const sphereRight = new THREE.Mesh(geometry, emerald);
+        scene.add(sphereRight);
+        sphereRight.position.x = 2.5;
 
 
         // Scene rendering
@@ -39,12 +49,12 @@
             renderer.render(scene, camera);
 
             // Scene animation
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
+            sphere.rotation.x += 0.01;
+            sphere.rotation.y += 0.01;
         }
         render();
 
-        // White directional light at half intensity shining from the top.
+        // White directional light shining from the top.
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
         scene.add(directionalLight);
         directionalLight.position.y += 5; 

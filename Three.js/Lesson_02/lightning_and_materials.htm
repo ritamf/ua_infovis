@@ -26,11 +26,13 @@
 
         // Definition of an object/geometry and camera position
         const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshPhongMaterial({
+        // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // the behavior of this material is the same with or without the lightning
+        const material = new THREE.MeshPhongMaterial({ // a material of this type should be used so that the lightning is shown.
             color: '#006063',
             specular: '#a9fcff',
             shininess: 100
         });
+
         const cube = new THREE.Mesh(geometry, material);
         scene.add(cube);
 
@@ -38,6 +40,7 @@
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
         scene.add(directionalLight);
 
+        // Add ambient light
         const alight = new THREE.AmbientLight(0xffffff);
         scene.add(alight);
 
