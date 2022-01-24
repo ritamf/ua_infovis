@@ -1,0 +1,73 @@
+<html>
+
+<head>
+    <script src="https://threejs.org/build/three.js"></script>
+</head>
+
+<body>
+    <script>
+        // definition of the scene, camera and renderer
+        const scene = new THREE.Scene();
+        aspectRatio = window.innerWidth / window.innerHeight;
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        window.addEventListener('resize', onWindowResize);
+        function onWindowResize() {
+            camera.aspect =  window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // definition of an object/geometry and camera position
+        const geometry = new THREE.SphereGeometry(1, 10, 10);
+        const material1 = new THREE.MeshPhongMaterial({
+            color: '#006063',
+            specular: '#a9fcff',
+            shininess: 100
+        });
+        const material2 = new THREE.MeshPhongMaterial({
+            color: '#006063',
+            specular: '#a9fcff',
+            shininess: 100,
+            flatShading: true
+        });
+        const sphere1 = new THREE.Mesh(geometry, material1);
+        sphere1.position.x = -2.5;
+        const sphere2 = new THREE.Mesh(geometry, material2);
+        sphere2.position.x = 2.5;
+
+        scene.add(sphere1);
+        scene.add(sphere2);
+        camera.position.z = 5;
+
+        // add directional light
+        dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+        dirLight.position = new THREE.Vector3(0, 5, 0);
+        scene.add(dirLight);
+
+        // add ambient light
+        const alight = new THREE.AmbientLight(0xffffff);
+        scene.add(alight);
+
+        // scene rendering
+        function render() {
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+
+            // scene animation
+            sphere1.rotation.x += 0.01;
+            sphere1.rotation.y += 0.01;
+            sphere2.rotation.x += 0.01;
+            sphere2.rotation.y += 0.01;
+        }
+        render();
+
+    </script>
+</body>
+
+</html>

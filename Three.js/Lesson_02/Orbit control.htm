@@ -1,0 +1,58 @@
+<html>
+
+<head>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+</head>
+
+<body>
+    <script>
+        // definition of the scene, camera and renderer
+        const scene = new THREE.Scene();
+        const pixelsToCoordinatesRatio = 1000;
+        const camera = new THREE.OrthographicCamera(-window.innerWidth / pixelsToCoordinatesRatio, 
+                                                    window.innerWidth / pixelsToCoordinatesRatio, 
+                                                    window.innerHeight / pixelsToCoordinatesRatio, -
+                                                    window.innerHeight / pixelsToCoordinatesRatio, 
+                                                    0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        window.addEventListener('resize', onWindowResize);
+        function onWindowResize() {
+            camera.aspect =  window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // definition of an object/geometry and camera position
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x00ff00,
+            wireframe: true
+        });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        camera.position.z = 5;
+
+        cameraLookDirection = new THREE.Vector3(0, 0, 0);
+
+        // scene rendering
+        function render() {
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+            controls.update();
+            camera.getWorldDirection(cameraLookDirection);
+            console.log(cameraLookDirection);   // output the current camera look direction as a 3D vector
+        }
+        render();
+
+    </script>
+</body>
+
+</html>
