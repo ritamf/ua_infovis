@@ -35,7 +35,7 @@
 
         // add directional light
         dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
-        dirLight.position = new THREE.Vector3(0, 5, 0);
+        dirLight.position.set(0, 5, 0);
         scene.add(dirLight);
 
         // add ambient light

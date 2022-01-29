@@ -1,0 +1,38 @@
+<html>
+
+<head>
+    <script src="https://threejs.org/build/three.js"></script>
+</head>
+
+<body>
+    <script>
+
+        // Definition of the scene, camera and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Definition of an object/geometry and camera position
+        const geometry = new THREE.PlaneGeometry(1, 1);
+        var texloader = new THREE.TextureLoader();
+        var tex = texloader.load("lena.jpg");
+        
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, map:tex });
+        const plane = new THREE.Mesh(geometry, material);
+        scene.add(plane);
+        camera.position.z = 5;
+
+        // Scene rendering
+        function render() {
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+        }
+        render();
+
+    </script>
+</body>
+
+</html>
