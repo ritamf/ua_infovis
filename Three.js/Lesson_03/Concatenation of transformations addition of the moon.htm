@@ -1,0 +1,122 @@
+<html>
+
+<head>
+    <script src="https://threejs.org/build/three.js"></script>
+</head>
+
+<body>
+    <script>
+
+        // Constant variables
+        const DISTANCE_FROM_EARTH = 356400;
+        const PERIOD = 28;
+        const INCLINATION = 0.089;
+        const SIZE_IN_EARTHS = 1 / 3.7;
+        const EARTH_RADIUS = 6371;
+
+        // rotation speed aroung the yy axis
+        var rotSpeedYY = 0.0025;
+
+        // inclination speed around the zz axis
+        var inclinationSpeedZZ = 0;
+
+        // Definition of the scene, camera and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Definition of Earth and camera position
+        const geometry = new THREE.SphereGeometry(1, 32, 32);
+
+        var texloader = new THREE.TextureLoader();
+        var tex = texloader.load("earth_surface_2048.jpg");
+        const material = new THREE.MeshPhongMaterial({ map: tex });
+
+        const earth = new THREE.Mesh(geometry, material);
+        scene.add(earth);
+        camera.position.z = 5;
+
+        // Definition of moon
+        const geometryMoon = new THREE.SphereGeometry(SIZE_IN_EARTHS*5, 32, 32);
+
+        var texloader = new THREE.TextureLoader();
+        var tex = texloader.load("moon_1024.jpg");
+        const materialMoon = new THREE.MeshPhongMaterial({ map: tex });
+
+        const moon = new THREE.Mesh(geometryMoon, materialMoon);
+        earth.add(moon);
+
+        var distance = DISTANCE_FROM_EARTH / EARTH_RADIUS;
+        moon.position.set(Math.sqrt(distance / 2), 0, -Math.sqrt(distance / 2));
+
+
+        // Add directional light
+        dirLight = new THREE.DirectionalLight(0xfffff, 1.0);
+        dirLight.position.set(1, 0, 0);
+        scene.add(dirLight);
+
+        // Add ambient light
+        const alight = new THREE.AmbientLight(0x333333);
+        scene.add(alight);
+
+
+        // Event listener that "listens" to the keys that the user clicks on
+        document.addEventListener("keydown", onDocumentKeyDown, false);
+        function onDocumentKeyDown(event) {
+            // Get the key code of the pressed key 
+            var keyCode = event.which;
+            console.log("tecla " + keyCode);
+
+            if (keyCode == 76) { // L
+                if (scene.children.indexOf(dirLight) != -1) {
+                    scene.remove(dirLight);
+                } else {
+                    scene.add(dirLight);
+                }
+            }
+
+            else if (keyCode == 187) { // +
+                dirLight.intensity += 0.25;
+            } else if (keyCode == 189) { // -
+                dirLight.intensity -= 0.25;
+            }
+
+            else if (keyCode == 37) { // left arrow
+                rotSpeedYY -= 0.0025;
+            } else if (keyCode == 39) { // right arrow
+                rotSpeedYY += 0.0025;
+            }
+
+            // else if (keyCode == 40) { // up arrow
+            //     inclinationSpeedZZ += 0.02;
+            // } else if (keyCode == 38) { // down arrow
+            //     inclinationSpeedZZ -= 0.02;
+            // }
+        }
+
+
+        // Scene rendering
+        function render() {
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+
+            // Scene animation
+            earth.rotation.y += rotSpeedYY;
+            //earth.rotation.z +=  0.41;
+
+            // Rotate the moon so it shows its moon-face toward earth
+            moon.rotation.y = Math.PI;
+            moon.rotation.x = INCLINATION;
+
+            // For animation 
+            moon.rotation.y += (earth.rotation.y / PERIOD);
+        }
+        render();
+
+    </script>
+</body>
+
+</html>
