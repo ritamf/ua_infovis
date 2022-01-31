@@ -1,0 +1,114 @@
+<html>
+
+<head>
+    <script src="https://threejs.org/build/three.js"></script>
+</head>
+
+<body>
+    <script>
+        // definition of the scene, camera and renderer
+        const scene = new THREE.Scene();
+        const pixelsToCoordinatesRatio = 250;
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // event listener to update viewport after resizing browser window
+        window.addEventListener('resize', onWindowResize);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+
+
+        // definition of an object/geometry and camera position
+        const geometry = new THREE.SphereGeometry(5, 10, 10);
+        const material = new THREE.MeshPhongMaterial({
+            color: '#006063',
+            specular: '#a9fcff',
+            shininess: 100
+        });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        camera.position.z = 20;
+
+        // add directional light
+        dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+        dirLight.position.set(0, 5, 0);
+        scene.add(dirLight);
+
+        // add ambient light
+        const alight = new THREE.AmbientLight(0xffffff);
+        scene.add(alight);
+
+
+        // Event listener that "listens" to the keys that the user clicks on
+        document.addEventListener("keydown", onDocumentKeyDown, false);
+        function onDocumentKeyDown(event) {
+            // Get the key code of the pressed key 
+            var keyCode = event.which;
+            console.log("tecla " + keyCode);
+
+            if (keyCode == 187) { // +
+                camera.lookAt(0, 0, 0);
+                camera.position.z -= 1;
+            } else if (keyCode == 189) { // -
+                camera.lookAt(0, 0, 0);
+                camera.position.z += 1;
+            }
+        }
+
+        // event listeners for mouse down, mouse up and mouse move
+        var drag = false;
+        var phi = 0, theta = 0;
+        var old_x, old_y;
+
+        var mouseDown = function (e) {
+            drag = true;
+            old_x = e.pageX, old_y = e.pageY;
+            return false;
+        }
+
+        var mouseUp = function (e) {
+            drag = false;
+        }
+
+        var mouseMove = function (e) {
+            if (!drag) return false;
+            var dX = e.pageX - old_x,
+                dY = e.pageY - old_y;
+            theta += dX * 2 * Math.PI / window.innerWidth;
+            phi += dY * 2 * Math.PI / window.innerHeight;
+            old_x = e.pageX, old_y = e.pageY;
+
+            // cube.rotation.x += theta;
+            // cube.rotation.y += phi;
+
+            camera.lookAt(0, 0, 0);
+            camera.position.x = 20 * Math.sin(theta) * Math.cos(phi);
+            camera.position.y = 20 * Math.sin(phi);
+            camera.position.z = 20 * Math.cos(theta) * Math.cos(phi);
+            camera.updateMatrix();
+
+        }
+
+        renderer.domElement.addEventListener("mousedown", mouseDown);
+        renderer.domElement.addEventListener("mouseup", mouseUp);
+        renderer.domElement.addEventListener("mousemove", mouseMove);
+
+        // scene rendering
+        function render() {
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+        }
+        render();
+
+    </script>
+</body>
+
+</html>

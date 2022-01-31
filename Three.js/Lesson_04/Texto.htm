@@ -1,0 +1,17 @@
+<script src="https://threejs.org/examples/js/loaders/FontLoader.js"></script>
+<script src="https://threejs.org/examples/js/geometries/TextGeometry.js"></script>
+<script>
+    var textMesh1;
+    var loader = new THREE.FontLoader();
+    loader.load("https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", function (font) {
+        textGeometry1 = new THREE.TextGeometry("Cube 1", {
+            font: font,
+            size: 0.22,
+            height: 0.05,
+        });
+        var materialText = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        textMesh1 = new THREE.Mesh(textGeometry1, materialText);
+        textMesh1.position.x = -2.5;
+        textMesh1.position.y = 1.5;
+    });
+</script>
