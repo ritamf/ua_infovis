@@ -1,17 +1,190 @@
-<script src="https://threejs.org/examples/js/loaders/FontLoader.js"></script>
-<script src="https://threejs.org/examples/js/geometries/TextGeometry.js"></script>
-<script>
-    var textMesh1;
-    var loader = new THREE.FontLoader();
-    loader.load("https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", function (font) {
-        textGeometry1 = new THREE.TextGeometry("Cube 1", {
-            font: font,
-            size: 0.22,
-            height: 0.05,
+<html>
+
+<head>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://threejs.org/examples/js/loaders/FontLoader.js"></script>
+    <script src="https://threejs.org/examples/js/geometries/TextGeometry.js"></script>
+</head>
+
+<body>
+    <script>
+        // definition of the scene, camera and renderer
+        const scene = new THREE.Scene();
+        const pixelsToCoordinatesRatio = 250;
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // event listener to update viewport after resizing browser window
+        window.addEventListener('resize', onWindowResize);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+
+
+        // definition of cube1
+        var geometry = new THREE.BoxGeometry(1, 1, 1);
+        var material = new THREE.MeshPhongMaterial({
+            color: '#006063',
+            specular: '#a9fcff',
+            shininess: 100
         });
-        var materialText = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        textMesh1 = new THREE.Mesh(textGeometry1, materialText);
-        textMesh1.position.x = -2.5;
-        textMesh1.position.y = 1.5;
-    });
-</script>
+        var cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        // definition of cube2
+        var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+        var material = new THREE.MeshPhongMaterial({
+            color: '#006063',
+            specular: '#a9fcff',
+            shininess: 100
+        });
+        const cube2 = new THREE.Mesh(geometry, material);
+        scene.add(cube2);
+        cube2.position.x += 3;
+
+
+        // definition of the text for cube, textMesh1
+        var textMesh1;
+        var loader = new THREE.FontLoader();
+        loader.load("https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", function (font) {
+            var textGeometry1 = new THREE.TextGeometry("Cube 1", {
+                font: font,
+                size: 0.22,
+                height: 0.05,
+            });
+            var materialText = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            textMesh1 = new THREE.Mesh(textGeometry1, materialText);
+            textMesh1.position.x = -0.45;
+            textMesh1.position.y = -1.2;
+            // scene.add(textMesh1); // this line is commented because the text should only be visible when the cube is red
+        });
+
+        // definition of the text for cube2, textMesh2
+        var textMesh2;
+        var loader = new THREE.FontLoader();
+        loader.load("https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", function (font) {
+            var textGeometry2 = new THREE.TextGeometry("Cube 2", {
+                font: font,
+                size: 0.22,
+                height: 0.05,
+            });
+            var materialText = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            textMesh2 = new THREE.Mesh(textGeometry2, materialText);
+            textMesh2.position.x = 2.5;
+            textMesh2.position.y = -1;
+            // scene.add(textMesh2); // this line is commented because the text should only be visible when the cube is red
+        });
+
+
+        // definition of camera position
+        camera.position.z = 5;
+
+        
+        // add directional light
+        dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+        dirLight.position.set(0, 5, 0);
+        scene.add(dirLight);
+
+        // add ambient light
+        const alight = new THREE.AmbientLight(0xffffff);
+        scene.add(alight);
+
+
+        // event listeners for mouse down, mouse up and mouse move
+        var drag = false;
+        var phi = 0, theta = 0;
+        var old_x, old_y;
+
+        var mouseDown = function (e) {
+            drag = true;
+            old_x = e.pageX, old_y = e.pageY;
+            return false;
+        }
+
+        var mouseUp = function (e) {
+            drag = false;
+        }
+
+        var mouseMove = function (e) {
+            if (!drag) return false;
+            var dX = e.pageX - old_x,
+                dY = e.pageY - old_y;
+            theta += dX * 2 * Math.PI / window.innerWidth;
+            phi += dY * 2 * Math.PI / window.innerHeight;
+            old_x = e.pageX, old_y = e.pageY;
+
+            cube.rotation.x += theta;
+            cube.rotation.y += phi;
+        }
+
+        renderer.domElement.addEventListener("mousedown", mouseDown);
+        renderer.domElement.addEventListener("mouseup", mouseUp);
+        renderer.domElement.addEventListener("mousemove", mouseMove);
+
+
+        // mouse event variables: when user clicks on an object, its behavior changes
+        var raycaster = new THREE.Raycaster(); // create once
+        var mouse = new THREE.Vector2(); // create once
+        intersects = [];
+
+        function onMouseDown(e) {
+            //compute transform betweem mouse and three.jscoordinate systems
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+            //Calls raycaster function with camera position and orientation
+            raycaster.setFromCamera(mouse, camera);
+
+            //Check if the ray intercept cube on the scene
+            intersects = raycaster.intersectObject(cube);
+            if (intersects.length) {
+                if (cube.material.color.getHex() == 24675) { // if blue
+                    cube.material.color.setHex(0x776063); // set to red
+                    scene.add(textMesh1);
+
+                } else if (cube.material.color.getHex() == 7823459) { // if red
+                    cube.material.color.setHex(0x006063); // set to blue
+                    scene.remove(textMesh1);
+                }
+            }
+
+            //Check if the ray intercept cube2 on the scene
+            intersects = raycaster.intersectObject(cube2);
+            if (intersects.length) {
+                if (cube2.material.color.getHex() == 24675) { // if blue
+                    cube2.material.color.setHex(0x776063); // set to red
+                    scene.add(textMesh2);
+
+                } else if (cube2.material.color.getHex() == 7823459) { // if red
+                    cube2.material.color.setHex(0x006063); // set to blue
+                    scene.remove(textMesh2);
+                }
+            }
+
+        }
+        renderer.domElement.addEventListener("mousedown", onMouseDown);
+
+
+        // to control the camera, giving an impression of the smaller cube going around the bigger one
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+
+        // scene rendering
+        function render() {
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+        }
+        render();
+
+    </script>
+</body>
+
+</html>
